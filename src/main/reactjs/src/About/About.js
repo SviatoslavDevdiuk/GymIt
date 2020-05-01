@@ -9,7 +9,6 @@ const about = () => {
         <Carousel className="About">
             <Carousel.Item>
                 <Image
-                    // className="d-block w-50 h-50"
                     src="http://prod-upp-image-read.ft.com/dd0f9378-b8a1-11e7-bff8-f9946607a6ba"
                     alt="First slide"
                     fluid rounded width={1200}
