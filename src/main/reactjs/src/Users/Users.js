@@ -44,6 +44,17 @@ const users = ({openPrevPage, openNextPage, changeCurrentPage, currentPage, user
 
         );
     });
+//TODO: fix diplaying negative numbers in pagination
+    const isNotLessThanOne = (number) => {
+        if (number > 0) {
+            return <Pagination.Item onClick={() => changeCurrentPage(number)}>{number}</Pagination.Item>
+        }
+    };
+    const isNotBiggerThatMax = (number) => {
+        if (number <= pageNumbers.length) {
+            return <Pagination.Item onClick={() => changeCurrentPage(number)}>{number}</Pagination.Item>
+        }
+    };
 
     return (
         <div>
@@ -53,7 +64,13 @@ const users = ({openPrevPage, openNextPage, changeCurrentPage, currentPage, user
             <Pagination>
                 <Pagination.First onClick={() => changeCurrentPage(1)}/>
                 <Pagination.Prev onClick={openPrevPage}/>
-                {renderPageNumbers}
+                {/*<Pagination.Item>{currentPage-1}</Pagination.Item>*/}
+                {isNotLessThanOne(currentPage - 2)}
+                {isNotLessThanOne(currentPage - 1)}
+                <Pagination.Item
+                    active={currentPage}>{currentPage}</Pagination.Item>
+                {isNotBiggerThatMax(currentPage + 1)}
+                {isNotBiggerThatMax(currentPage + 2)}
                 <Pagination.Next onClick={openNextPage}/>
                 <Pagination.Last onClick={() => changeCurrentPage(pageNumbers.length)}/>
             </Pagination>
