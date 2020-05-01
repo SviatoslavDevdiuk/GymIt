@@ -1,0 +1,15 @@
+.modal-content {
+    position: relative;
+    background-color: blue;
+
+    padding: 20px;
+    margin: auto;
+    width: 50%;
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    max-width: 60%;
+
+
+}
