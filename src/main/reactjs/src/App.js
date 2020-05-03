@@ -6,6 +6,7 @@ import {
     Route,
     Link
 } from "react-router-dom";
+import {history} from 'helpers';
 import LoginForm from './LoginForm/LoginForm';
 import Users from './Users/Users'
 import {Button, FormControl, FormGroup, FormLabel, Dropdown, DropdownButton} from "react-bootstrap";
@@ -14,6 +15,8 @@ import About from './About/About';
 import './User/NewUser.css';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Editor from "./Editor/Editor";
+import {Alert} from "./components";
+import {alertService} from "./servicess";
 
 const ERROR_MESSAGE = "Your email or password is incorrect";
 
@@ -43,9 +46,12 @@ class App extends Component {
             editUser: false,
             users: [],
             filteredUsers: [],
-            filterBy: 'Search by first name'
+            filterBy: 'Search by first name',
+            autoClose: true,
+            keepAfterRouteChange: false
         };
     }
+
 
     componentDidMount() {
         this.fetchCustomers();
@@ -175,7 +181,7 @@ class App extends Component {
         const address = cloneDeep(this.state.user.address);
         address[fieldName] = event.target.value;
         const user = cloneDeep(this.state.user);
-        user.address = address
+        user.address = address;
         this.setState({user});
         console.log(fieldName, event.target.value)
     };
@@ -185,6 +191,7 @@ class App extends Component {
     };
 
     deletePersonHandler = (id) => {
+        const {autoClose, keepAfterRouteChange} = this.state;
         let url = "/customers/" + id + "/delete";
         fetch(url, {
             method: 'DELETE',
@@ -192,7 +199,8 @@ class App extends Component {
         }).then(data => {
             console.log(data);
             this.componentDidMount();
-        })
+        });
+            alertService.info('deleted successfully',{autoClose,keepAfterRouteChange})
     };
 
     addUser = () => {
@@ -306,6 +314,10 @@ class App extends Component {
         }
     };
 
+    componentDidUpdate() {
+        setTimeout(() => this.setState({message: 'user deleted'}), 3000);
+    }
+
     render() {
         if (this.state.editUser) {
             return (<Editor user={this.state.user}
@@ -377,7 +389,8 @@ class App extends Component {
         }
 
         return !this.state.credentialsValid ?
-            <Router>
+            <Router history={history}>
+
                 <div>
                     <nav>
                         <ul>
@@ -388,6 +401,7 @@ class App extends Component {
                                 <Link to="/about">About</Link>
                             </li>
                             <li>
+
                                 <Link to="/customers">Customers</Link>
                             </li>
                         </ul>
@@ -411,6 +425,7 @@ class App extends Component {
                                         onClick={() => this.setState({filterBy: 'Search by email'})}>Email</Dropdown.Item>
                                 </DropdownButton>
                             </InputGroup>
+
 
                             <Users
                                 openPrevPage={() => this.openPrevPage()}
