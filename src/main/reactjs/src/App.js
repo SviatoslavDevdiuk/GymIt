@@ -15,7 +15,6 @@ import About from './About/About';
 import './User/NewUser.css';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Editor from "./Editor/Editor";
-import {Alert} from "./components";
 import {alertService} from "./servicess";
 
 const ERROR_MESSAGE = "Your email or password is incorrect";
@@ -175,7 +174,6 @@ class App extends Component {
         user[fieldName] = event.target.value;
 
         this.setState({user});
-        console.log(fieldName, event.target.value)
     };
     setInputValueForAddress = (event, fieldName) => {
         const address = cloneDeep(this.state.user.address);
@@ -183,7 +181,6 @@ class App extends Component {
         const user = cloneDeep(this.state.user);
         user.address = address;
         this.setState({user});
-        console.log(fieldName, event.target.value)
     };
 
     showModal = () => {
@@ -191,7 +188,7 @@ class App extends Component {
     };
 
     deletePersonHandler = (id) => {
-        const {autoClose, keepAfterRouteChange} = this.state;
+        const {autoClose} = this.state;
         let url = "/customers/" + id + "/delete";
         fetch(url, {
             method: 'DELETE',
@@ -200,7 +197,7 @@ class App extends Component {
             console.log(data);
             this.componentDidMount();
         });
-            alertService.info('deleted successfully',{autoClose,keepAfterRouteChange})
+        alertService.info('customer has been deleted successfully', {autoClose});
     };
 
     addUser = () => {
@@ -214,18 +211,23 @@ class App extends Component {
             body: JSON.stringify(user),
 
 
-        }).then(response => {
-            response.json()
-        }).then(data =>
-            console.log(data)).catch(err => {
+        })
+                .then(response => {
+                console.log(response.json());
+            })
+            .then(data =>
+                console.log("Data: " + data)).catch(err => {
             console.log("Error: " + err);
         });
         this.componentDidMount();
-
+        // const {autoClose} = this.state;
         this.setState({
             showModal: false
         });
+        //TODO: Fix problem with main alert
+        // alertService.alert('customer ' + user.firstName + ' ' + user.lastName + ' has been added successfully ', {autoClose})
         this.cleanUserInputFields();
+        alert("Please welcome " + user.firstName + ' ' + user.lastName);
     };
 
     cleanUserInputFields = () => {
@@ -250,6 +252,7 @@ class App extends Component {
     };
 
     changeUserData = (user) => {
+
         fetch("customers/update", {
             headers: {
                 'Content-Type': 'application/json',
@@ -426,7 +429,7 @@ class App extends Component {
                                 </DropdownButton>
                             </InputGroup>
 
-
+                            {/*<Alert/>*/}
                             <Users
                                 openPrevPage={() => this.openPrevPage()}
                                 openNextPage={() => this.openNextPage()}
