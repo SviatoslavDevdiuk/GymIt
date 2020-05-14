@@ -6,6 +6,7 @@ import {
     Route,
     Link
 } from "react-router-dom";
+import {history} from 'helpers';
 import LoginForm from './LoginForm/LoginForm';
 import Users from './Users/Users'
 import {Button, FormControl, FormGroup, FormLabel, Dropdown, DropdownButton} from "react-bootstrap";
@@ -14,6 +15,7 @@ import About from './About/About';
 import './User/NewUser.css';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Editor from "./Editor/Editor";
+import {alertService} from "./servicess";
 
 const ERROR_MESSAGE = "Your email or password is incorrect";
 
@@ -43,9 +45,12 @@ class App extends Component {
             editUser: false,
             users: [],
             filteredUsers: [],
-            filterBy: 'Search by first name'
+            filterBy: 'Search by first name',
+            autoClose: true,
+            keepAfterRouteChange: false
         };
     }
+
 
     componentDidMount() {
         this.fetchCustomers();
@@ -169,15 +174,13 @@ class App extends Component {
         user[fieldName] = event.target.value;
 
         this.setState({user});
-        console.log(fieldName, event.target.value)
     };
     setInputValueForAddress = (event, fieldName) => {
         const address = cloneDeep(this.state.user.address);
         address[fieldName] = event.target.value;
         const user = cloneDeep(this.state.user);
-        user.address = address
+        user.address = address;
         this.setState({user});
-        console.log(fieldName, event.target.value)
     };
 
     showModal = () => {
@@ -185,6 +188,7 @@ class App extends Component {
     };
 
     deletePersonHandler = (id) => {
+        const {autoClose} = this.state;
         let url = "/customers/" + id + "/delete";
         fetch(url, {
             method: 'DELETE',
@@ -192,7 +196,8 @@ class App extends Component {
         }).then(data => {
             console.log(data);
             this.componentDidMount();
-        })
+        });
+        alertService.info('customer has been deleted successfully', {autoClose});
     };
 
     addUser = () => {
@@ -206,18 +211,23 @@ class App extends Component {
             body: JSON.stringify(user),
 
 
-        }).then(response => {
-            response.json()
-        }).then(data =>
-            console.log(data)).catch(err => {
+        })
+                .then(response => {
+                console.log(response.json());
+            })
+            .then(data =>
+                console.log("Data: " + data)).catch(err => {
             console.log("Error: " + err);
         });
         this.componentDidMount();
-
+        // const {autoClose} = this.state;
         this.setState({
             showModal: false
         });
+        //TODO: Fix problem with main alert
+        // alertService.alert('customer ' + user.firstName + ' ' + user.lastName + ' has been added successfully ', {autoClose})
         this.cleanUserInputFields();
+        alert("Please welcome " + user.firstName + ' ' + user.lastName);
     };
 
     cleanUserInputFields = () => {
@@ -242,6 +252,7 @@ class App extends Component {
     };
 
     changeUserData = (user) => {
+
         fetch("customers/update", {
             headers: {
                 'Content-Type': 'application/json',
@@ -305,6 +316,10 @@ class App extends Component {
                 });
         }
     };
+
+    componentDidUpdate() {
+        setTimeout(() => this.setState({message: 'user deleted'}), 3000);
+    }
 
     render() {
         if (this.state.editUser) {
@@ -377,7 +392,8 @@ class App extends Component {
         }
 
         return !this.state.credentialsValid ?
-            <Router>
+            <Router history={history}>
+
                 <div>
                     <nav>
                         <ul>
@@ -388,6 +404,7 @@ class App extends Component {
                                 <Link to="/about">About</Link>
                             </li>
                             <li>
+
                                 <Link to="/customers">Customers</Link>
                             </li>
                         </ul>
@@ -412,6 +429,7 @@ class App extends Component {
                                 </DropdownButton>
                             </InputGroup>
 
+                            {/*<Alert/>*/}
                             <Users
                                 openPrevPage={() => this.openPrevPage()}
                                 openNextPage={() => this.openNextPage()}

@@ -3,6 +3,7 @@ import User from '../User/User'
 import './Users.css';
 import Table from "react-bootstrap/Table";
 import {Button, Pagination, Badge} from "react-bootstrap";
+import {Alert} from "../components";
 
 
 const users = ({openPrevPage, openNextPage, changeCurrentPage, currentPage, users, deleteUser, editUser, showModal, openDetails}) => {
@@ -79,6 +80,7 @@ const users = ({openPrevPage, openNextPage, changeCurrentPage, currentPage, user
             </Button>
             <Table striped bordered hover>
                 <tbody>
+                <Alert/>
                 <tr>
                     <th>id</th>
                     <th>first name</th>
@@ -87,8 +89,8 @@ const users = ({openPrevPage, openNextPage, changeCurrentPage, currentPage, user
                     <th>edit</th>
                     <th>delete</th>
                 </tr>
-
                 {renderUsers(currentPage)}
+
                 </tbody>
             </Table>
         </div>

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Modal, Button, FormControl, FormGroup, FormLabel} from "react-bootstrap";
 import {cloneDeep} from "lodash";
 import './Editor.css';
-
 class Editor extends Component {
     constructor(props) {
         super(props);
